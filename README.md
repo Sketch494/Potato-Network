@@ -1,4 +1,4 @@
-![Logo](https://imgur.com/a/RoNBruc)
+![Logo](https://cdn.discordapp.com/attachments/926612039588282368/1214464632190930974/logo.png?ex=65f93553&is=65e6c053&hm=6235ef948ef7d90650b2ea001f7a977556509e7296af18d467db05164b25b962&)
 
 <h3 align="center">- not just your average Minecraft server.</h3>
 
@@ -7,7 +7,7 @@
 - Discord [Potato NetWork Discord](https://discord.com/invite/potato-network)
 
 - Edited By Sketch494 **https://youtube.com/@sketch494**
-![Logo]([https://imgur.com/a/RoNBruc](https://imgur.com/a/iObtLuF))
+![Logo](https://cdn.discordapp.com/attachments/926612039588282368/1214464656840724561/Sketch494.png?ex=65f93559&is=65e6c059&hm=a12e3e90436beb4dcaecbf21ab329484a1527adfe5901c4f4daabded60bcef04&)
 
 - YouTube [Potato NetWork YouTube](https://www.youtube.com/channel/UClgQnUx7zNngwsHHeNIniSA)
 
@@ -16,7 +16,7 @@
 <h3 align="left">Connect with me:</h3>
 <p align="left">
 <a href="https://www.youtube.com/c/sketch494" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/youtube.svg" alt="sketch494" height="30" width="40" /></a>
-<a href="https://discord.gg/discord.gg/eciipse" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/discord.svg" alt="discord.gg/eciipse" height="30" width="40" /></a>
+<a href="discord.gg/eciipse" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/discord.svg" alt="discord.gg/eciipse" height="30" width="40" /></a>
 </p>
 
 <h3 align="left">Languages and Tools:</h3>
