@@ -5,6 +5,94 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{ Potato Network }</title>
+<script>
+      // Array of come back messages with emojis
+      var comeBackMessages = [
+          "We miss you, [UserName]! 😢",
+          "Come back soon! 🚀",
+          "Stay with us! 🏠",
+          "Don't leave us! 🙏",
+          "Come back now! ⏰",
+          "We need you! 🤗",
+          "We miss you! 💔",
+          "Stay a bit! ⏳",
+          "Return, please! 🔄",
+          "Back, please! 🔄",
+          "Come back in! 🔄",
+          "We're lonely here! 😔",
+          "Come back soon! 🕒",
+          "Join us now! 🎉",
+          "Come back home! 🏠",
+          "Don't leave us! 😭",
+          "Back for more! 🔄",
+          "Stay with us! 🤝",
+          "Join us now! 🎊",
+          "We're waiting here! 🕰️",
+          // Additional messages
+          "We're here waiting! 🤗",
+          "Where did you go? 🤔",
+          "We miss your smile! 😊",
+          "Join us again! 🎊",
+          "Back for fun! 🎈",
+          "Stay for a while! ⏳",
+          "We're feeling blue! 💙",
+          "Don't be a stranger! 🙈",
+          "Let's reunite! 🤝",
+          "We're feeling lonely! 😔",
+          // Scary messages
+          "[UserName], return now! 😱",
+          "Don't wander off, [UserName]! 👀",
+          "Come back, [UserName]! 🌑",
+          "We're waiting, [UserName]! 👻",
+          "Return, [UserName]... or else... 😨",
+          "Come back, [UserName]! 🕷️",
+          "We see you, [UserName]... 👁️",
+          "Beware, [UserName]... 💀",
+          "Remember us, [UserName]... 🕯️",
+          "I know where you live [UserName]🌀"
+
+      ];
+
+      // Function to change the title with a random come back message
+      function changeTitle(userName) {
+          var randomIndex = Math.floor(Math.random() * comeBackMessages.length);
+          var message = comeBackMessages[randomIndex].replace("[UserName]", userName);
+          document.title = message;
+      }
+
+      // Function to prompt the user to enter their name
+      function promptUserName() {
+          var userName = prompt("Please enter your name or nickname:");
+          if (userName) {
+              localStorage.setItem("userName", userName);
+              return userName;
+          }
+      }
+
+      // Retrieve user's name from local storage or prompt if not found
+      var userName = localStorage.getItem("userName");
+      if (!userName) {
+          userName = promptUserName();
+      }
+
+      // Change title with user's name
+      if (userName) {
+          changeTitle(userName);
+      }
+
+      // Event listener for window blur
+      window.addEventListener('blur', function() {
+          if (userName) {
+              changeTitle(userName);
+          }
+      });
+
+      // Reset title when window is focused
+      window.addEventListener('focus', function() {
+          document.title = "Potato Network";
+      });
+  </script>
+
     <meta property="og:title" content="Potato Network">
     <meta name="description" content=- not just your average Minecraft server.">
     <meta property="og:image" content="https://eciipse.com/media/logo.png">
