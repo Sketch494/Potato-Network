@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OBS Timer</title>
+<link rel="stylesheet" href="jscolor/jscolor.css">
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -12,6 +13,8 @@
     }
     #timer {
         font-size: 24px;
+        margin: 50px auto 20px; /* Center-align the timer and move it down */
+        width: 200px; /* Set a fixed width for better presentation */
     }
     /* Define additional CSS classes for color changes */
     .red {
@@ -21,22 +24,51 @@
 </head>
 <body>
 <h1>OBS Timer</h1>
+<div id="timer">00:00:00</div>
 <input type="number" id="hours" placeholder="Hours">
 <input type="number" id="minutes" placeholder="Minutes">
 <input type="number" id="seconds" placeholder="Seconds">
 <button onclick="startTimer()">Start</button>
 <button onclick="resetTimer()">Reset</button>
-<div id="timer">00:00:00</div>
-<div id="addtoobs"></div> <!-- Container for add to OBS link -->
-
+<br><br>
+<label for="bgColor">Background Color:</label>
+<input class="jscolor" id="bgColor" value="#32CD32" onchange="changeBackgroundColor()">
+<br><br>
+<label for="font">Font Family:</label>
+<select id="font" onchange="changeFont()">
+    <option value="Arial, sans-serif">Arial</option>
+    <option value="Georgia, serif">Georgia</option>
+    <!-- Add more options for different fonts -->
+    <optgroup label="Local Fonts">
+        <option value="YourLocalFontName">Your Local Font</option>
+    </optgroup>
+</select>
+<br><br>
+</body>
+<script src="jscolor/jscolor.js"></script>
 <script>
     var hoursInput = document.getElementById("hours");
     var minutesInput = document.getElementById("minutes");
     var secondsInput = document.getElementById("seconds");
     var timerDisplay = document.getElementById("timer");
+    var bgColorInput = document.getElementById("bgColor");
+    var fontSelect = document.getElementById("font");
     var startTime;
-    var timerInterval;
-    var timerWindow;
+    var animationFrameId;
+
+    // Load saved settings upon page load
+    window.onload = function() {
+        var savedBgColor = localStorage.getItem("bgColor");
+        if (savedBgColor) {
+            bgColorInput.value = savedBgColor;
+            changeBackgroundColor();
+        }
+        var savedFont = localStorage.getItem("font");
+        if (savedFont) {
+            fontSelect.value = savedFont;
+            changeFont();
+        }
+    }
 
     function startTimer() {
         var hours = parseInt(hoursInput.value) || 0;
@@ -46,41 +78,28 @@
         var totalTimeInSeconds = (hours * 3600) + (minutes * 60) + seconds;
         
         if (totalTimeInSeconds > 0) {
-            startTime = new Date().getTime() + (totalTimeInSeconds * 1000);
-            timerInterval = setInterval(updateTimer, 1000);
-            
-            // Create link to add to OBS
-            var url = encodeURIComponent(window.location.href);
-            var addToOBSLink = document.getElementById("addtoobs");
-            addToOBSLink.innerHTML = '<a href="https://eciipse.com/browser-source-url-generator?url=' + url + '" target="_blank">Add to OBS</a>';
-            
-            // Open new window with live time
-            timerWindow = window.open("livetime.html", "_blank", "width=200,height=100,top=100,left=100,location=0,toolbar=0,menubar=0,status=0");
+            startTime = Date.now() + (totalTimeInSeconds * 1000);
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = requestAnimationFrame(updateTimer);
         }
     }
 
     function resetTimer() {
-        clearInterval(timerInterval);
+        cancelAnimationFrame(animationFrameId);
         hoursInput.value = "";
         minutesInput.value = "";
         secondsInput.value = "";
         timerDisplay.innerText = "00:00:00";
         timerDisplay.classList.remove("red"); // Reset color
-        var addToOBSLink = document.getElementById("addtoobs");
-        addToOBSLink.innerHTML = ''; // Clear add to OBS link
-        // Close the timer window
-        if (timerWindow) {
-            timerWindow.close();
-        }
     }
 
     function updateTimer() {
-        var now = new Date().getTime();
+        var now = Date.now();
         var distance = startTime - now;
         
-        if (distance < 0) {
-            clearInterval(timerInterval);
+        if (distance <= 0) {
             timerDisplay.innerText = "00:00:00";
+            timerDisplay.classList.remove("red");
             return;
         }
 
@@ -95,18 +114,60 @@
         
         timerDisplay.innerText = hours + ":" + minutes + ":" + seconds;
 
-        // Update timer in the separate window
-        if (timerWindow && !timerWindow.closed) {
-            timerWindow.document.getElementById("liveTimer").innerText = timerDisplay.innerText;
-        }
-
         // Change color based on remaining time
         if (minutes < 10) {
             timerDisplay.classList.add("red");
         } else {
             timerDisplay.classList.remove("red");
         }
+
+        animationFrameId = requestAnimationFrame(updateTimer);
+    }
+
+    function changeBackgroundColor() {
+        var bgColor = bgColorInput.value;
+        document.body.style.backgroundColor = bgColor;
+        // Save color setting
+        localStorage.setItem("bgColor", bgColor);
+    }
+
+    function changeFont() {
+        var font = fontSelect.value;
+        if (font === "YourLocalFontName") {
+            // If local font is selected, prompt user to select a font file
+            var fileInput = document.createElement("input");
+            fileInput.type = "file";
+            fileInput.accept = ".ttf, .otf, .woff, .woff2";
+            fileInput.onchange = function() {
+                addLocalFont(fileInput.files[0]);
+            };
+            fileInput.click();
+        } else {
+            document.body.style.fontFamily = font;
+            // Save font setting
+            localStorage.setItem("font", font);
+        }
+    }
+
+    function addLocalFont(file) {
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(event) {
+                var fontUrl = event.target.result;
+                var fontName = file.name.split(".")[0]; // Extract font name from file name
+                var fontFace = `@font-face {
+                    font-family: '${fontName}';
+                    src: url(${fontUrl});
+                }`;
+                var style = document.createElement("style");
+                style.appendChild(document.createTextNode(fontFace));
+                document.head.appendChild(style);
+                document.body.style.fontFamily = fontName + ", sans-serif"; // Apply the newly added local font
+                // Save font setting
+                localStorage.setItem("font", fontName + ", sans-serif");
+            };
+            reader.readAsDataURL(file);
+        }
     }
 </script>
-</body>
 </html>
