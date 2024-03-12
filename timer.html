@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OBS Timer</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin-top: 50px;
+    }
+    #timer {
+        font-size: 24px;
+    }
+    /* Define additional CSS classes for color changes */
+    .red {
+        color: red;
+    }
+</style>
+</head>
+<body>
+<h1>OBS Timer</h1>
+<input type="number" id="hours" placeholder="Hours">
+<input type="number" id="minutes" placeholder="Minutes">
+<input type="number" id="seconds" placeholder="Seconds">
+<button onclick="startTimer()">Start</button>
+<button onclick="resetTimer()">Reset</button>
+<div id="timer">00:00:00</div>
+<div id="addtoobs"></div> <!-- Container for add to OBS link -->
+
+<script>
+    var hoursInput = document.getElementById("hours");
+    var minutesInput = document.getElementById("minutes");
+    var secondsInput = document.getElementById("seconds");
+    var timerDisplay = document.getElementById("timer");
+    var startTime;
+    var timerInterval;
+    var timerWindow;
+
+    function startTimer() {
+        var hours = parseInt(hoursInput.value) || 0;
+        var minutes = parseInt(minutesInput.value) || 0;
+        var seconds = parseInt(secondsInput.value) || 0;
+
+        var totalTimeInSeconds = (hours * 3600) + (minutes * 60) + seconds;
+        
+        if (totalTimeInSeconds > 0) {
+            startTime = new Date().getTime() + (totalTimeInSeconds * 1000);
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            // Create link to add to OBS
+            var url = encodeURIComponent(window.location.href);
+            var addToOBSLink = document.getElementById("addtoobs");
+            addToOBSLink.innerHTML = '<a href="https://eciipse.com/browser-source-url-generator?url=' + url + '" target="_blank">Add to OBS</a>';
+            
+            // Open new window with live time
+            timerWindow = window.open("livetime.html", "_blank", "width=200,height=100,top=100,left=100,location=0,toolbar=0,menubar=0,status=0");
+        }
+    }
+
+    function resetTimer() {
+        clearInterval(timerInterval);
+        hoursInput.value = "";
+        minutesInput.value = "";
+        secondsInput.value = "";
+        timerDisplay.innerText = "00:00:00";
+        timerDisplay.classList.remove("red"); // Reset color
+        var addToOBSLink = document.getElementById("addtoobs");
+        addToOBSLink.innerHTML = ''; // Clear add to OBS link
+        // Close the timer window
+        if (timerWindow) {
+            timerWindow.close();
+        }
+    }
+
+    function updateTimer() {
+        var now = new Date().getTime();
+        var distance = startTime - now;
+        
+        if (distance < 0) {
+            clearInterval(timerInterval);
+            timerDisplay.innerText = "00:00:00";
+            return;
+        }
+
+        var hours = Math.floor(distance / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+        // Add leading zero if less than 10
+        hours = (hours < 10) ? "0" + hours : hours;
+        minutes = (minutes < 10) ? "0" + minutes : minutes;
+        seconds = (seconds < 10) ? "0" + seconds : seconds;
+        
+        timerDisplay.innerText = hours + ":" + minutes + ":" + seconds;
+
+        // Update timer in the separate window
+        if (timerWindow && !timerWindow.closed) {
+            timerWindow.document.getElementById("liveTimer").innerText = timerDisplay.innerText;
+        }
+
+        // Change color based on remaining time
+        if (minutes < 10) {
+            timerDisplay.classList.add("red");
+        } else {
+            timerDisplay.classList.remove("red");
+        }
+    }
+</script>
+</body>
+</html>
